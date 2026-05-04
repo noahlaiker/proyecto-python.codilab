@@ -69,14 +69,75 @@ def dibujar_interfaz(pantalla, vida):
 
 # --- BUCLE PRINCIPAL ---
 control = True
+# ============================================================ 
+# NOAH: ARREGLEMOS TU JUEGO PASO A PASO
+# No borres todo. La idea es encontrar qué está fallando y corregirlo.
+# ============================================================
+
+# 1) Primero mirá esta parte:
+#    Hay un choque entre rect_jugador y rect_caja,
+#    pero el problema es que esos rectángulos todavía no existen.
+#    O sea: Python no puede revisar un choque si antes no le dijiste
+#    dónde está el jugador y dónde está la caja.
+
+# 2) El orden correcto debería ser:
+#    - mover al personaje
+#    - mover la caja
+#    - crear rect_jugador y rect_caja
+#    - revisar si chocaron
+
+# 3) Buscá si tenés un:
+#    if rect_jugador.colliderect(rect_caja):
+#    antes de haber creado rect_jugador y rect_caja.
+#    Si está antes, ese bloque está en el lugar incorrecto.
+
+# 4) También tenés dos partes que revisan el choque.
+#    Dejá una sola.
+#    Si dejás las dos, el código queda más confuso y puede restar vida mal.
+
+# 5) Después de mover la caja, ahí sí creá los rectángulos:
+#    uno para el jugador y otro para la caja.
+#    Pensá que el rectángulo es como una "zona invisible" que usa el juego
+#    para saber si dos cosas se tocaron.
+
+# 6) La caja mide 50 por 50 cuando la dibujás.
+#    Entonces rect_caja también debería medir 50 por 50.
+
+# 7) El personaje es más alto que la cara.
+#    Tiene gorro, cuerpo, piernas y zapatos.
+#    Por eso el rectángulo del jugador tiene que cubrir casi todo el personaje,
+#    no solamente la cabeza.
+
+# 8) Cuando haya choque:
+#    - restá vida
+#    - mandá la caja hacia la derecha otra vez
+#    - asegurate de que la vida no baje de 0
+
+# 9) Ahora mirá las nubes.
+#    Ya hiciste una función para dibujarlas, pero no la estás usando.
+#    La función se llama nubes_dibujo().
+
+# 10) En la parte donde dice "# Nubes",
+#     en vez de volver a moverlas, tenés que dibujarlas.
+#     Las nubes se mueven en la parte de lógica.
+#     Las nubes se dibujan en la parte de dibujo.
+
+# 11) Regla para acordarte:
+#     Primero se calcula qué pasa en el juego.
+#     Después se dibuja todo en pantalla.
+
+# 12) Cuando lo termines, probá esto:
+#     - el juego no debería tirar error
+#     - la caja debería moverse hacia la izquierda
+#     - si la caja toca al personaje, baja la vida
+#     - la vida no debería bajar de 0
+#     - las nubes deberían verse
+#     - los rectángulos rojos deberían marcar las zonas de choque
 while control:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             control = False
-    if rect_jugador.colliderect(rect_caja):
-        print("¡Choque!") # Esto te avisará en la consola de VS Code si hubo contacto
-        vida_actual -= 20
-        caja_x = 950       # Importante: mandamos la caja lejos para que no reste vida cada milisegundo
+
 
     # 1. Controles
     teclas = pygame.key.get_pressed()
@@ -127,6 +188,7 @@ while control:
     # Nubes
     for n in lista_nubes: 
      n[0] -= velocidad_nubes
+     
         
     # Suelo (Línea verde gruesa)
     pygame.draw.line(pantalla, (0, 200, 0), (0, 600), (800, 600), 200)
